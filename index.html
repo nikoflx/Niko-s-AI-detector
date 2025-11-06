@@ -7,27 +7,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* Custom CSS Variables for easy theme switching */
         :root {
-            --primary-bg: #1a1a2e; /* Dark, futuristic blue-purple */
+            --primary-bg: #1a1a2e; 
             --card-bg: #2c2c44;
-            --accent-color: #00d2ff; /* Neon Blue */
-            --success-color: #38c172; /* Green */
-            --warning-color: #ff3860; /* Red/Pink */
+            --accent-color: #00d2ff; 
+            --success-color: #38c172; 
+            --warning-color: #ff3860; 
             --font-color: #f0f0f0;
             --font-family: 'Poppins', sans-serif;
         }
 
-        /* Base Styles and Smooth Scrolling */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             background-color: var(--primary-bg);
@@ -37,7 +33,6 @@
             padding: 20px;
         }
 
-        /* Header and Typography */
         .header {
             text-align: center;
             padding: 40px 20px;
@@ -69,7 +64,6 @@
             padding-bottom: 10px;
         }
 
-        /* Card and Layout */
         .detector-container {
             max-width: 1000px;
             margin: 0 auto;
@@ -85,7 +79,6 @@
             border: 1px solid #444466;
         }
 
-        /* Key Input Area */
         .api-key-input {
             display: flex;
             gap: 10px;
@@ -93,7 +86,7 @@
         }
         #apiKeyInput {
             flex-grow: 1;
-            min-height: 45px;
+            min-height: 45px; 
             padding: 15px;
             font-family: var(--font-family);
             font-size: 0.9rem;
@@ -122,7 +115,6 @@
             background-color: #5bc58e;
         }
 
-        /* Text Input Area */
         textarea {
             width: 100%;
             min-height: 250px;
@@ -156,7 +148,6 @@
             transition: color 0.3s;
         }
 
-        /* Button Styling and Animation */
         #analyzeButton {
             background-color: var(--accent-color);
             color: var(--primary-bg);
@@ -186,20 +177,9 @@
             box-shadow: none;
         }
 
-        /* Results Section */
-        .results-icon {
-            margin-right: 10px;
-            color: var(--success-color);
-        }
-
-        .percentage-bars {
-            margin: 30px 0;
-        }
-
-        .bar-row {
-            margin-bottom: 20px;
-        }
-
+        .results-icon { margin-right: 10px; color: var(--success-color); }
+        .percentage-bars { margin: 30px 0; }
+        .bar-row { margin-bottom: 20px; }
         .bar-label {
             display: flex;
             justify-content: space-between;
@@ -207,10 +187,7 @@
             margin-bottom: 5px;
         }
 
-        .score-text {
-            font-size: 1.1rem;
-            color: var(--accent-color);
-        }
+        .score-text { font-size: 1.1rem; color: var(--accent-color); }
 
         .bar-track {
             background-color: #3c3c5c;
@@ -220,21 +197,15 @@
             position: relative;
         }
 
-        /* Animation for the bars */
         .bar-fill {
             height: 100%;
             width: 0%; 
             border-radius: 10px;
-            transition: width 1.5s ease-out; /* SMOOTH ANIMATION HERE */
+            transition: width 1.5s ease-out;
         }
 
-        .human-fill {
-            background-color: var(--success-color);
-        }
-
-        .ai-fill {
-            background-color: var(--warning-color);
-        }
+        .human-fill { background-color: var(--success-color); }
+        .ai-fill { background-color: var(--warning-color); }
 
         .conclusion {
             font-size: 1.2rem;
@@ -245,30 +216,12 @@
             margin-top: 20px;
         }
 
-        .conclusion.success {
-            background-color: rgba(56, 193, 114, 0.2);
-            color: var(--success-color);
-        }
-        
-        .conclusion.caution {
-            background-color: rgba(255, 180, 0, 0.2);
-            color: orange;
-        }
+        .conclusion.success { background-color: rgba(56, 193, 114, 0.2); color: var(--success-color); }
+        .conclusion.caution { background-color: rgba(255, 180, 0, 0.2); color: orange; }
+        .conclusion.warning { background-color: rgba(255, 56, 96, 0.2); color: var(--warning-color); }
+        .conclusion.error { background-color: rgba(255, 180, 0, 0.2); color: orange; }
 
-        .conclusion.warning {
-            background-color: rgba(255, 56, 96, 0.2);
-            color: var(--warning-color);
-        }
-
-        .conclusion.error {
-            background-color: rgba(255, 180, 0, 0.2);
-            color: orange;
-        }
-
-        /* Loading Spinner */
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         .spinner {
             border: 4px solid rgba(255, 255, 255, 0.1);
@@ -285,7 +238,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 20px 0;
@@ -294,22 +246,11 @@
             color: #666;
         }
 
-        /* Mobile Responsiveness */
         @media (max-width: 600px) {
-            h1 {
-                font-size: 2rem;
-                letter-spacing: 2px;
-            }
-            .controls {
-                flex-direction: column;
-                gap: 10px;
-            }
-            #analyzeButton {
-                width: 100%;
-            }
-            .card {
-                padding: 20px;
-            }
+            h1 { font-size: 2rem; letter-spacing: 2px; }
+            .controls { flex-direction: column; gap: 10px; }
+            #analyzeButton { width: 100%; }
+            .card { padding: 20px; }
         }
     </style>
     </head>
@@ -402,7 +343,6 @@
 
             // --- Helper Functions ---
             
-            // Checks if the button should be enabled
             const updateAnalyzeButtonState = () => {
                 const currentLength = textInput.value.trim().length;
                 analyzeButton.disabled = currentLength < MIN_CHARS_FOR_ANALYSIS || !userApiKey;
@@ -410,7 +350,6 @@
 
             // --- Key Management Functions ---
 
-            // Load key visually on startup
             if (userApiKey) {
                 apiKeyInput.value = '********';
                 saveKeyButton.textContent = 'Key Saved';
@@ -418,7 +357,6 @@
                 analyzeButton.disabled = true;
             }
 
-            // Save key to local storage
             saveKeyButton.addEventListener('click', () => {
                 const key = apiKeyInput.value.trim();
                 
@@ -448,7 +386,6 @@
                 updateAnalyzeButtonState();
             });
 
-            // Initialize the button state
             textInput.dispatchEvent(new Event('input')); 
 
             // --- Core Analysis Logic (Using the Official SDK) ---
@@ -458,26 +395,23 @@
 
                 if (!userApiKey || analyzeButton.disabled) return;
 
-                // Reset UI and show loading animation
                 resultsDisplay.classList.add('hidden');
                 loadingIndicator.classList.remove('hidden');
                 analyzeButton.disabled = true;
 
                 try {
-                    // 1. Initialize the SDK Client
-                    const ai = new GoogleGenAI({ apiKey: userApiKey });
+                    // FIX: We use the global 'genai' variable exposed by the CDN 
+                    // and access the correct class 'GoogleGenAI' from it.
+                    const ai = new genai.GoogleGenAI({ apiKey: userApiKey });
 
-                    // 2. Define the Structured Output Prompt
                     const promptContent = `Analyze the following text. Respond ONLY with a single JSON object. The 'ai_score' should be your confidence level (0-100) that the text was written by a large language model. The 'human_score' should be 100 minus the ai_score. The 'verdict' should be a short summary conclusion. The JSON object structure MUST be: { "ai_score": [0-100], "human_score": [0-100], "verdict": "Your conclusion here" }
                     
                     Text to analyze: "${text}"`;
                     
-                    // 3. Call the API using the SDK
                     const response = await ai.models.generateContent({
                         model: 'gemini-2.5-flash',
                         contents: [{ role: "user", parts: [{ text: promptContent }] }],
                         config: {
-                            // Enforce clean JSON output structure
                             responseMimeType: "application/json", 
                             responseSchema: {
                                 type: "object",
@@ -491,7 +425,7 @@
                         }
                     });
 
-                    // 4. Extract and Parse the JSON result
+                    // SDK handles parsing the clean output!
                     const rawOutput = response.text.trim();
                     const result = JSON.parse(rawOutput);
 
@@ -500,16 +434,13 @@
                     const aiScore = Math.min(100, Math.round(result.ai_score || 0));
                     const verdict = result.verdict || "AI Analysis Complete (Unreliable Score)";
 
-                    // Set text content
                     humanPercentageSpan.textContent = `${humanScore}%`;
                     aiPercentageSpan.textContent = `${aiScore}%`;
                     conclusionText.textContent = verdict;
                     
-                    // Set the width of the bars (CSS transition handles the smooth animation)
                     humanFill.style.width = `${humanScore}%`;
                     aiFill.style.width = `${aiScore}%`;
 
-                    // Style the conclusion based on the primary finding
                     if (aiScore > 70) {
                         conclusionText.className = 'conclusion warning'; 
                     } else if (aiScore > 40) {
