@@ -1,0 +1,262 @@
+/* Custom CSS Variables for easy theme switching */
+:root {
+    --primary-bg: #1a1a2e; /* Dark, futuristic blue-purple */
+    --card-bg: #2c2c44;
+    --accent-color: #00d2ff; /* Neon Blue */
+    --success-color: #38c172; /* Green */
+    --warning-color: #ff3860; /* Red/Pink */
+    --font-color: #f0f0f0;
+    --font-family: 'Poppins', sans-serif;
+}
+
+/* Base Styles and Smooth Scrolling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--primary-bg);
+    color: var(--font-color);
+    font-family: var(--font-family);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Header and Typography */
+.header {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, var(--primary-bg), #111122);
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.logo {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-color);
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: 5px;
+    margin-top: 10px;
+}
+
+h2 {
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    font-weight: 600;
+    border-bottom: 2px solid rgba(0, 210, 255, 0.2);
+    padding-bottom: 10px;
+}
+
+/* Card and Layout */
+.detector-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    gap: 30px;
+}
+
+.card {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+    border: 1px solid #444466; /* Subtle border for depth */
+}
+
+/* Input Area */
+textarea {
+    width: 100%;
+    min-height: 250px;
+    padding: 15px;
+    border: 2px solid #555577;
+    border-radius: 8px;
+    background-color: #1a1a2e;
+    color: var(--font-color);
+    font-size: 1rem;
+    font-family: var(--font-family);
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+#charCount {
+    font-size: 0.9rem;
+    color: #aaaaaa;
+    transition: color 0.3s;
+}
+
+/* Button Styling and Animation */
+#analyzeButton {
+    background-color: var(--accent-color);
+    color: var(--primary-bg);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s, opacity 0.3s;
+    box-shadow: 0 5px 15px rgba(0, 210, 255, 0.4);
+}
+
+#analyzeButton:hover:not(:disabled) {
+    background-color: #38f4ff; /* Lighter neon on hover */
+    transform: translateY(-2px);
+}
+
+#analyzeButton:active {
+    transform: translateY(0);
+}
+
+#analyzeButton:disabled {
+    background-color: #555577;
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+/* Results Section */
+.results-icon {
+    margin-right: 10px;
+    color: var(--success-color);
+}
+
+.percentage-bars {
+    margin: 30px 0;
+}
+
+.bar-row {
+    margin-bottom: 20px;
+}
+
+.bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.score-text {
+    font-size: 1.1rem;
+    color: var(--accent-color);
+}
+
+.bar-track {
+    background-color: #3c3c5c;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Animation for the bars */
+.bar-fill {
+    height: 100%;
+    width: 0%; /* Start at 0, JavaScript sets the width */
+    border-radius: 10px;
+    transition: width 1.5s ease-out; /* SMOOTH ANIMATION HERE */
+}
+
+.human-fill {
+    background-color: var(--success-color);
+}
+
+.ai-fill {
+    background-color: var(--warning-color);
+}
+
+.conclusion {
+    font-size: 1.2rem;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.conclusion.success {
+    background-color: rgba(56, 193, 114, 0.2);
+    color: var(--success-color);
+}
+
+.conclusion.warning {
+    background-color: rgba(255, 56, 96, 0.2);
+    color: var(--warning-color);
+}
+
+.conclusion.error {
+    background-color: rgba(255, 180, 0, 0.2);
+    color: orange;
+}
+
+/* Loading Spinner */
+.hidden {
+    display: none !important;
+}
+
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid var(--accent-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 40px;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2rem;
+        letter-spacing: 2px;
+    }
+    .controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+    #analyzeButton {
+        width: 100%;
+    }
+    .card {
+        padding: 20px;
+    }
+}
