@@ -1,0 +1,1 @@
+# Niko-s-AI-detector
