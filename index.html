@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niko's AI Detector - 95% Accuracy</title>
+    <link rel="stylesheet" href="styles.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">NIKØ'S</div>
+        <h1>AI DETECTOR</h1>
+        <p>Analyze text with near-perfect accuracy.</p>
+    </header>
+
+    <main class="detector-container">
+        <section class="input-section card">
+            <h2>Paste Your Content Below</h2>
+            <textarea id="textInput" placeholder="Paste your text here (up to 25,000 characters)..." maxlength="25000"></textarea>
+            
+            <div class="controls">
+                <p id="charCount">0 / 25,000 Characters</p>
+                <button id="analyzeButton" disabled>
+                    <span class="button-icon">🔍</span> Analyze Text
+                </button>
+            </div>
+        </section>
+
+        <section class="results-section card">
+            <div id="loadingIndicator" class="hidden">
+                <div class="spinner"></div>
+                <p>Analyzing text with advanced NLP models...</p>
+            </div>
+            
+            <div id="resultsDisplay" class="hidden">
+                <h2><span class="results-icon">📊</span> Analysis Results</h2>
+                
+                <div class="percentage-bars">
+                    <div class="bar-row">
+                        <div class="bar-label">Human Written: <span id="humanPercentage" class="score-text">0%</span></div>
+                        <div class="bar-track">
+                            <div class="bar-fill human-fill"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="bar-row">
+                        <div class="bar-label">AI Written: <span id="aiPercentage" class="score-text">0%</span></div>
+                        <div class="bar-track">
+                            <div class="bar-fill ai-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="verdict-label">Conclusion:</p>
+                <p id="conclusionText" class="conclusion success">Paste text and click Analyze to get started.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Niko's Detector. Accuracy powered by specialized LLM detection APIs.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
