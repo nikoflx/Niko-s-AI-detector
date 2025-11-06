@@ -18,33 +18,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Constants
     const MAX_CHARS = 25000;
     const MIN_CHARS_FOR_ANALYSIS = 100;
+    // CORRECTED: Use the official REST API URL for a simple fetch request
     const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
     const LOCAL_STORAGE_KEY = 'geminiApiKey';
     let userApiKey = localStorage.getItem(LOCAL_STORAGE_KEY) || '';
 
+    // --- Helper Functions ---
+    
+    // Checks if the button should be enabled
+    const updateAnalyzeButtonState = () => {
+        const currentLength = textInput.value.trim().length;
+        analyzeButton.disabled = currentLength < MIN_CHARS_FOR_ANALYSIS || !userApiKey;
+    };
+
     // --- Key Management Functions ---
 
-    // Load key visually
+    // Load key visually on startup
     if (userApiKey) {
-        apiKeyInput.value = '********'; // Mask the key
+        apiKeyInput.value = '********';
         saveKeyButton.textContent = 'Key Saved';
+    } else {
+        // If no key is saved, disable the button initially
+        analyzeButton.disabled = true;
     }
 
     // Save key to local storage
     saveKeyButton.addEventListener('click', () => {
         const key = apiKeyInput.value.trim();
-        // Check if the user entered a new key or if they just clicked 'Save Key' on the masked value
+        
+        // Only proceed if the input value is NOT the masked value and is not empty
         if (key && key !== '********') {
             localStorage.setItem(LOCAL_STORAGE_KEY, key);
-            userApiKey = key;
+            userApiKey = key; // Update the variable for immediate use
             apiKeyInput.value = '********';
             saveKeyButton.textContent = 'Key Saved';
             alert('API Key saved successfully! It is stored locally in your browser.');
-        } else if (key === '********') {
-            alert('Key is already saved!');
+        } else if (userApiKey) {
+             // Case where the user clicked save but the masked value was already there
+             alert('Key is already saved!');
         } else {
             alert('Please enter a valid API Key.');
         }
+        updateAnalyzeButtonState(); // Re-check button state after saving
     });
 
     // --- Character Counting and UI State ---
@@ -52,11 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
     textInput.addEventListener('input', () => {
         const currentLength = textInput.value.length;
         charCount.textContent = `${currentLength} / ${MAX_CHARS} Characters`;
-        analyzeButton.disabled = currentLength < MIN_CHARS_FOR_ANALYSIS || !userApiKey;
         
         if (!resultsDisplay.classList.contains('hidden')) {
             resultsDisplay.classList.add('hidden');
         }
+        updateAnalyzeButtonState(); // Update button state whenever text changes
     });
 
     // Initialize the button state
@@ -83,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             Text to analyze: "${text}"`;
 
+            // CORRECTED: Key is sent as a query parameter for the REST API
             const response = await fetch(`${GEMINI_API_URL}?key=${userApiKey}`, {
                 method: 'POST',
                 headers: {
@@ -91,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     contents: [{ role: "user", parts: [{ text: promptContent }] }],
                     config: {
-                        temperature: 0.0 // Keep temperature low for deterministic output
+                        temperature: 0.0 
                     }
                 })
             });
@@ -124,11 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Style the conclusion based on the primary finding
             if (aiScore > 70) {
-                conclusionText.className = 'conclusion warning'; // High AI risk
+                conclusionText.className = 'conclusion warning'; 
             } else if (aiScore > 40) {
-                 conclusionText.className = 'conclusion caution'; // Moderate risk (Add a CSS style for 'caution')
+                 conclusionText.className = 'conclusion success caution'; // Using success base with a potential custom 'caution' style
             } else {
-                conclusionText.className = 'conclusion success'; // Low AI risk / High Human
+                conclusionText.className = 'conclusion success'; 
             }
 
         } catch (error) {
@@ -136,14 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
             conclusionText.textContent = `Error: ${error.message}`;
             conclusionText.className = 'conclusion error';
             
-            // Reset bars on error
             humanFill.style.width = '0%';
             aiFill.style.width = '0%';
         } finally {
             loadingIndicator.classList.add('hidden');
             resultsDisplay.classList.remove('hidden');
-            analyzeButton.disabled = false;
-            textInput.dispatchEvent(new Event('input')); // Re-check button state
+            updateAnalyzeButtonState();
         }
     });
 });
