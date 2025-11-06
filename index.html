@@ -318,7 +318,8 @@
     <script src="https://unpkg.com/@google/genai@0.2.1/dist/index.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        // Use window.onload to ensure the external SDK is DEFINED before running your code.
+        window.onload = () => {
             // 1. Get DOM Elements
             const textInput = document.getElementById('textInput');
             const analyzeButton = document.getElementById('analyzeButton');
@@ -386,6 +387,7 @@
                 updateAnalyzeButtonState();
             });
 
+            // Initialize the button state
             textInput.dispatchEvent(new Event('input')); 
 
             // --- Core Analysis Logic (Using the Official SDK) ---
@@ -400,8 +402,7 @@
                 analyzeButton.disabled = true;
 
                 try {
-                    // FIX: We use the global 'genai' variable exposed by the CDN 
-                    // and access the correct class 'GoogleGenAI' from it.
+                    // FIX: Uses the globally available 'genai' variable to initialize the client.
                     const ai = new genai.GoogleGenAI({ apiKey: userApiKey });
 
                     const promptContent = `Analyze the following text. Respond ONLY with a single JSON object. The 'ai_score' should be your confidence level (0-100) that the text was written by a large language model. The 'human_score' should be 100 minus the ai_score. The 'verdict' should be a short summary conclusion. The JSON object structure MUST be: { "ai_score": [0-100], "human_score": [0-100], "verdict": "Your conclusion here" }
@@ -425,7 +426,6 @@
                         }
                     });
 
-                    // SDK handles parsing the clean output!
                     const rawOutput = response.text.trim();
                     const result = JSON.parse(rawOutput);
 
@@ -462,7 +462,7 @@
                     updateAnalyzeButtonState();
                 }
             });
-        });
+        }; // End of window.onload
     </script>
     </body>
 </html>
