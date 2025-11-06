@@ -3,20 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Niko's AI Detector - 95% Accuracy</title>
+    <title>Niko's AI Detector - Client-Side Demo</title>
     <link rel="stylesheet" href="styles.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
         <div class="logo">NIKØ'S</div>
-        <h1>AI DETECTOR</h1>
-        <p>Analyze text with near-perfect accuracy.</p>
+        <h1>AI DETECTOR DEMO</h1>
+        <p>Uses Gemini API (client-side) - **Accuracy is Unreliable!**</p>
     </header>
 
     <main class="detector-container">
         <section class="input-section card">
-            <h2>Paste Your Content Below</h2>
+            <h2>Authentication & Input</h2>
+            
+            <div class="api-key-input">
+                <input type="password" id="apiKeyInput" placeholder="Paste your FREE Gemini API Key here (Required!)">
+                <button id="saveKeyButton">Save Key</button>
+            </div>
+            
             <textarea id="textInput" placeholder="Paste your text here (up to 25,000 characters)..." maxlength="25000"></textarea>
             
             <div class="controls">
@@ -30,7 +36,7 @@
         <section class="results-section card">
             <div id="loadingIndicator" class="hidden">
                 <div class="spinner"></div>
-                <p>Analyzing text with advanced NLP models...</p>
+                <p>Analyzing text using Gemini...</p>
             </div>
             
             <div id="resultsDisplay" class="hidden">
@@ -59,7 +65,7 @@
     </main>
 
     <footer class="footer">
-        <p>&copy; 2025 Niko's Detector. Accuracy powered by specialized LLM detection APIs.</p>
+        <p>&copy; 2025 Niko's Detector. Key stored locally in browser.</p>
     </footer>
 
     <script src="script.js"></script>
