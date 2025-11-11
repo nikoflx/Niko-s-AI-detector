@@ -491,7 +491,7 @@
             </div>
 
             <!-- Fun Slider Captcha -->
-            <div class="captcha-container" id="captchaContainer">
+            <div class="captcha-container">
                 <div class="captcha-title">🎯 Slide to Complete the Puzzle</div>
                 
                 <div class="captcha-canvas-container">
@@ -561,41 +561,19 @@
         let puzzleX = 0;
         let puzzleY = 0;
         let tolerance = 10;
-        let captchaInitialized = false;
 
         const canvas = document.getElementById('captchaCanvas');
         const pieceCanvas = document.getElementById('captchaPiece');
         const ctx = canvas ? canvas.getContext('2d') : null;
         const pieceCtx = pieceCanvas ? pieceCanvas.getContext('2d') : null;
 
-        // Check if user completed captcha in last 24 hours
-        function checkCaptchaStatus() {
-            const lastCompleted = localStorage.getItem('captchaCompleted');
-            if (lastCompleted) {
-                const timePassed = Date.now() - parseInt(lastCompleted);
-                const twentyFourHours = 24 * 60 * 60 * 1000;
-                if (timePassed < twentyFourHours) {
-                    captchaVerified = true;
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // Save captcha completion
-        function saveCaptchaCompletion() {
-            localStorage.setItem('captchaCompleted', Date.now().toString());
-        }
-
         function generatePuzzleCaptcha() {
             if (!canvas || !pieceCanvas || !ctx || !pieceCtx) return;
             
             captchaVerified = false;
-            captchaInitialized = true;
             document.getElementById('captchaStatus').className = 'captcha-status';
             document.getElementById('sliderButton').style.left = '0px';
             document.getElementById('sliderTrack').style.width = '0%';
-            document.getElementById('sliderButton').textContent = '→';
             
             // Set canvas size
             canvas.width = 400;
@@ -771,7 +749,6 @@
             
             if (Math.abs(pieceLeft - correctPosition) < tolerance) {
                 captchaVerified = true;
-                saveCaptchaCompletion(); // Save completion time
                 statusDiv.textContent = '✓ Verified! You can now analyze text.';
                 statusDiv.className = 'captcha-status success';
                 sliderButton.textContent = '✓';
@@ -791,8 +768,10 @@
             }
         }
 
-        // Initialize - check if captcha was completed in last 24 hours
-        checkCaptchaStatus();
+        // Initialize captcha on load
+        if (canvas && pieceCanvas) {
+            generatePuzzleCaptcha();
+        }
 
         // Refresh button
         const refreshBtn = document.getElementById('refreshCaptcha');
@@ -844,20 +823,8 @@
                 return;
             }
 
-            // Check if captcha was completed in last 24 hours
-            if (!checkCaptchaStatus()) {
-                // Show captcha if not verified yet
-                const captchaContainer = document.getElementById('captchaContainer');
-                captchaContainer.classList.add('active');
-                
-                // Generate captcha if not initialized yet
-                if (!captchaInitialized) {
-                    generatePuzzleCaptcha();
-                }
-                
-                // Scroll to captcha
-                captchaContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
+            // Verify captcha
+            if (!captchaVerified) {
                 showError('⚠️ Please complete the puzzle captcha first!');
                 return;
             }
@@ -900,8 +867,8 @@
             } finally {
                 loading.classList.remove('active');
                 analyzeBtn.disabled = false;
-                // Hide captcha after successful analysis
-                document.getElementById('captchaContainer').classList.remove('active');
+                // Generate new captcha after submission
+                generatePuzzleCaptcha();
             }
         });
 
