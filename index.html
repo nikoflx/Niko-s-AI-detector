@@ -288,7 +288,32 @@
             color: white;
             transform: translateY(-2px);
         }
+        
+        /* New style for the Buy Me a Coffee button */
+        .bmc-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #3C2A21; /* Coffee/Brown color */
+            background: #FFDD00; /* Yellow/Gold color */
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px; /* Spacing from analyze button */
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 5px 20px rgba(255, 221, 0, 0.4);
+        }
 
+        .bmc-btn:hover {
+            transform: translateY(-2px);
+            background: #ffe333;
+            box-shadow: 0 10px 30px rgba(255, 221, 0, 0.6);
+        }
+        
         .analyze-btn {
             width: 100%;
             padding: 18px;
@@ -459,36 +484,6 @@
             25% { transform: translateX(-10px); }
             75% { transform: translateX(10px); }
         }
-        
-        /* --- New Styles for Buy Me a Coffee Button --- */
-        .bmc-button {
-            display: inline-block;
-            text-decoration: none;
-            color: #ffffff;
-            background-color: #FFDD00; /* Yellowish color */
-            border-radius: 7px;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
-            transition: all 0.2s ease-in-out;
-            border: 1px solid transparent;
-            margin-top: 20px; /* Space above the button */
-            margin-bottom: 10px; /* Space below the button */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .bmc-button:hover {
-            background-color: #f7c948; /* Slightly darker on hover */
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .bmc-button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        /* -------------------------------------------- */
 
         footer {
             text-align: center;
@@ -542,8 +537,16 @@
             <button class="analyze-btn" id="analyzeBtn">
                 ✨ Analyze Text
             </button>
-
-            <div class="loading" id="loading">
+            
+            <a 
+                href="https://buymeacoffee.com/iamnikoflx" 
+                target="_blank" 
+                class="bmc-btn"
+                rel="noopener noreferrer"
+            >
+                ☕ Buy Me a Coffee
+            </a>
+                        <div class="loading" id="loading">
                 <div class="spinner"></div>
                 <p>Analyzing your text...</p>
             </div>
@@ -577,13 +580,7 @@
                     </div>
                 </div>
             </div>
-
-            <div style="text-align: center;">
-                <a href="https://buymeacoffee.com/iamnikoflx" target="_blank" class="bmc-button">
-                    ☕ Buy me a coffee
-                </a>
-            </div>
-                    </div>
+        </div>
 
         <footer>
             <p>Powered by Sapling AI • Made with ❤️ by Nikoflox</p>
@@ -771,12 +768,13 @@
         }
 
         function startDrag(e) {
+            if (captchaVerified) return; // Do not drag if already verified
             isDragging = true;
             startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
         }
 
         function drag(e) {
-            if (!isDragging) return;
+            if (!isDragging || captchaVerified) return;
             e.preventDefault();
             
             const currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
@@ -795,7 +793,7 @@
         }
 
         function stopDrag() {
-            if (!isDragging) return;
+            if (!isDragging || captchaVerified) return;
             isDragging = false;
             
             // Check if puzzle is in correct position
@@ -810,6 +808,7 @@
                 statusDiv.textContent = '✓ Verified! You can now analyze text.';
                 statusDiv.className = 'captcha-status success';
                 sliderButton.textContent = '✓';
+                pieceCanvas.style.left = correctPosition + 'px'; // Snap to correct position
             } else {
                 captchaVerified = false;
                 statusDiv.textContent = '✗ Not quite! Try again.';
@@ -939,7 +938,7 @@
             } catch (err) {
                 // Show detailed error
                 let errorMessage = 'Failed to analyze text. ';
-              
+                
                 if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
                     errorMessage += 'Network error - check your internet connection.';
                 } else if (err.message.includes('API key')) {
@@ -951,7 +950,7 @@
                 } else {
                     errorMessage += 'Please try again later.';
                 }
-              
+                
                 showError(errorMessage);
                 console.error('Analysis error:', err);
                 console.error('Full error details:', err.message);
