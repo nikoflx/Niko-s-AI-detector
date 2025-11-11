@@ -152,6 +152,12 @@
             border-radius: 20px;
             margin: 25px 0;
             border: 2px dashed #667eea;
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .captcha-container.active {
+            display: block;
         }
 
         .captcha-title {
@@ -485,7 +491,7 @@
             </div>
 
             <!-- Fun Slider Captcha -->
-            <div class="captcha-container">
+            <div class="captcha-container" id="captchaContainer">
                 <div class="captcha-title">🎯 Slide to Complete the Puzzle</div>
                 
                 <div class="captcha-canvas-container">
@@ -555,19 +561,41 @@
         let puzzleX = 0;
         let puzzleY = 0;
         let tolerance = 10;
+        let captchaInitialized = false;
 
         const canvas = document.getElementById('captchaCanvas');
         const pieceCanvas = document.getElementById('captchaPiece');
         const ctx = canvas ? canvas.getContext('2d') : null;
         const pieceCtx = pieceCanvas ? pieceCanvas.getContext('2d') : null;
 
+        // Check if user completed captcha in last 24 hours
+        function checkCaptchaStatus() {
+            const lastCompleted = localStorage.getItem('captchaCompleted');
+            if (lastCompleted) {
+                const timePassed = Date.now() - parseInt(lastCompleted);
+                const twentyFourHours = 24 * 60 * 60 * 1000;
+                if (timePassed < twentyFourHours) {
+                    captchaVerified = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Save captcha completion
+        function saveCaptchaCompletion() {
+            localStorage.setItem('captchaCompleted', Date.now().toString());
+        }
+
         function generatePuzzleCaptcha() {
             if (!canvas || !pieceCanvas || !ctx || !pieceCtx) return;
             
             captchaVerified = false;
+            captchaInitialized = true;
             document.getElementById('captchaStatus').className = 'captcha-status';
             document.getElementById('sliderButton').style.left = '0px';
             document.getElementById('sliderTrack').style.width = '0%';
+            document.getElementById('sliderButton').textContent = '→';
             
             // Set canvas size
             canvas.width = 400;
@@ -743,6 +771,7 @@
             
             if (Math.abs(pieceLeft - correctPosition) < tolerance) {
                 captchaVerified = true;
+                saveCaptchaCompletion(); // Save completion time
                 statusDiv.textContent = '✓ Verified! You can now analyze text.';
                 statusDiv.className = 'captcha-status success';
                 sliderButton.textContent = '✓';
@@ -762,10 +791,8 @@
             }
         }
 
-        // Initialize captcha on load
-        if (canvas && pieceCanvas) {
-            generatePuzzleCaptcha();
-        }
+        // Initialize - check if captcha was completed in last 24 hours
+        checkCaptchaStatus();
 
         // Refresh button
         const refreshBtn = document.getElementById('refreshCaptcha');
@@ -817,8 +844,20 @@
                 return;
             }
 
-            // Verify captcha
-            if (!captchaVerified) {
+            // Check if captcha was completed in last 24 hours
+            if (!checkCaptchaStatus()) {
+                // Show captcha if not verified yet
+                const captchaContainer = document.getElementById('captchaContainer');
+                captchaContainer.classList.add('active');
+                
+                // Generate captcha if not initialized yet
+                if (!captchaInitialized) {
+                    generatePuzzleCaptcha();
+                }
+                
+                // Scroll to captcha
+                captchaContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
                 showError('⚠️ Please complete the puzzle captcha first!');
                 return;
             }
@@ -841,11 +880,18 @@
                     })
                 });
 
-                if (!response.ok) {
-                    throw new Error('API request failed');
-                }
-
                 const data = await response.json();
+                
+                if (!response.ok) {
+                    // Show specific error message from API
+                    const errorMsg = data.msg || data.message || `API Error: ${response.status}`;
+                    throw new Error(errorMsg);
+                }
+                
+                // Check if we got a valid response
+                if (data.score === undefined) {
+                    throw new Error('Invalid API response - no score returned');
+                }
                 
                 // The API returns a score where higher values indicate more AI-generated content
                 const aiScore = data.score || 0;
@@ -856,13 +902,29 @@
                 displayResults(humanPercent, aiPercent);
 
             } catch (err) {
-                showError('Failed to analyze text. Please try again later.');
+                // Show detailed error
+                let errorMessage = 'Failed to analyze text. ';
+                
+                if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+                    errorMessage += 'Network error - check your internet connection.';
+                } else if (err.message.includes('API key')) {
+                    errorMessage += 'Invalid API key. Please check your Sapling API key.';
+                } else if (err.message.includes('quota') || err.message.includes('limit')) {
+                    errorMessage += 'API quota exceeded. The free tier has daily limits.';
+                } else if (err.message) {
+                    errorMessage += err.message;
+                } else {
+                    errorMessage += 'Please try again later.';
+                }
+                
+                showError(errorMessage);
                 console.error('Analysis error:', err);
+                console.error('Full error details:', err.message);
             } finally {
                 loading.classList.remove('active');
                 analyzeBtn.disabled = false;
-                // Generate new captcha after submission
-                generatePuzzleCaptcha();
+                // Hide captcha after successful analysis
+                document.getElementById('captchaContainer').classList.remove('active');
             }
         });
 
