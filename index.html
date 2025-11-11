@@ -1,4 +1,64 @@
 <!DOCTYPE html>
+<html>
+<head>
+    <title>Buy Me a Coffee UI Match</title>
+    <style>
+        /* CSS to match the official BMC button style */
+        .bmc-button-ui {
+            /* Basic Link Styling */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            cursor: pointer;
+
+            /* Visual Appearance */
+            background-color: #FF813F; /* Official BMC Orange */
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px; /* Standard BMC border radius */
+            border: 1px solid #FF813F;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+
+            /* Typography */
+            font-family: 'Lato', Helvetica, Arial, sans-serif; /* Common web safe font for matching */
+            font-weight: 700; /* Bold */
+            font-size: 16px;
+            line-height: 1.5;
+
+            /* Hover Effect */
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .bmc-button-ui:hover {
+            background-color: #e66a28; /* Slightly darker on hover */
+            border-color: #e66a28;
+        }
+
+        /* Styling for the icon/emoji inside the button */
+        .bmc-button-ui .icon {
+            margin-right: 8px; /* Space between the icon and text */
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <a 
+        href="https://buymeacoffee.com/iamnikoflx" 
+        class="bmc-button-ui"
+        target="_blank" 
+        rel="noopener noreferrer" 
+        role="button"
+    >
+        <span class="icon">☕</span> 
+        Buy Me a Coffee
+    </a>
+
+</body>
+</html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
