@@ -561,19 +561,41 @@
         let puzzleX = 0;
         let puzzleY = 0;
         let tolerance = 10;
+        let captchaInitialized = false;
 
         const canvas = document.getElementById('captchaCanvas');
         const pieceCanvas = document.getElementById('captchaPiece');
         const ctx = canvas ? canvas.getContext('2d') : null;
         const pieceCtx = pieceCanvas ? pieceCanvas.getContext('2d') : null;
 
+        // Check if user completed captcha in last 24 hours
+        function checkCaptchaStatus() {
+            const lastCompleted = localStorage.getItem('captchaCompleted');
+            if (lastCompleted) {
+                const timePassed = Date.now() - parseInt(lastCompleted);
+                const twentyFourHours = 24 * 60 * 60 * 1000;
+                if (timePassed < twentyFourHours) {
+                    captchaVerified = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Save captcha completion
+        function saveCaptchaCompletion() {
+            localStorage.setItem('captchaCompleted', Date.now().toString());
+        }
+
         function generatePuzzleCaptcha() {
             if (!canvas || !pieceCanvas || !ctx || !pieceCtx) return;
             
             captchaVerified = false;
+            captchaInitialized = true;
             document.getElementById('captchaStatus').className = 'captcha-status';
             document.getElementById('sliderButton').style.left = '0px';
             document.getElementById('sliderTrack').style.width = '0%';
+            document.getElementById('sliderButton').textContent = '→';
             
             // Set canvas size
             canvas.width = 400;
@@ -749,6 +771,7 @@
             
             if (Math.abs(pieceLeft - correctPosition) < tolerance) {
                 captchaVerified = true;
+                saveCaptchaCompletion(); // Save completion time
                 statusDiv.textContent = '✓ Verified! You can now analyze text.';
                 statusDiv.className = 'captcha-status success';
                 sliderButton.textContent = '✓';
@@ -768,8 +791,8 @@
             }
         }
 
-        // Initialize captcha on load (but keep it hidden)
-        // Captcha will generate when user first clicks analyze
+        // Initialize - check if captcha was completed in last 24 hours
+        checkCaptchaStatus();
 
         // Refresh button
         const refreshBtn = document.getElementById('refreshCaptcha');
@@ -821,13 +844,14 @@
                 return;
             }
 
-            // Show captcha if not verified yet
-            if (!captchaVerified) {
+            // Check if captcha was completed in last 24 hours
+            if (!checkCaptchaStatus()) {
+                // Show captcha if not verified yet
                 const captchaContainer = document.getElementById('captchaContainer');
                 captchaContainer.classList.add('active');
                 
-                // Generate new captcha if first time showing
-                if (!canvas.width) {
+                // Generate captcha if not initialized yet
+                if (!captchaInitialized) {
                     generatePuzzleCaptcha();
                 }
                 
@@ -876,10 +900,8 @@
             } finally {
                 loading.classList.remove('active');
                 analyzeBtn.disabled = false;
-                // Reset captcha for next use
-                captchaVerified = false;
+                // Hide captcha after successful analysis
                 document.getElementById('captchaContainer').classList.remove('active');
-                generatePuzzleCaptcha();
             }
         });
 
